@@ -1,7 +1,17 @@
 node_modules/
 dist/
+
+# Secrets – never commit
 .env
+*.env
+
+# Personal data – never commit
 data/cv.pdf
 data/cv-profile.json
 data/seen-jobs.json
 data/match-results/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.tmp
