@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+data/cv.pdf
+data/cv-profile.json
+data/seen-jobs.json
+data/match-results/

@@ -1,0 +1,48 @@
+# ─── OpenAI ───────────────────────────────────────────────────────────────────
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4o
+
+# ─── Telegram ─────────────────────────────────────────────────────────────────
+# Create a bot at @BotFather, then get your chat ID from @userinfobot
+TELEGRAM_BOT_TOKEN=123456789:ABC...
+TELEGRAM_CHAT_ID=987654321
+
+# ─── Email (nodemailer / Gmail SMTP) ──────────────────────────────────────────
+# For Gmail: use App Password (https://myaccount.google.com/apppasswords)
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USER=you@gmail.com
+EMAIL_PASS=your-app-specific-password
+EMAIL_FROM_NAME=Jan Kowalski
+# Fallback apply email if job listing has none (leave empty to skip)
+EMAIL_APPLY_FALLBACK=
+
+# ─── CV ───────────────────────────────────────────────────────────────────────
+CV_PDF_PATH=data/cv.pdf
+
+# ─── Matching ─────────────────────────────────────────────────────────────────
+# Jobs with score >= this threshold trigger a Telegram notification (0-100)
+MATCH_THRESHOLD=60
+# Max GPT-4o matching calls per scan run (cost control)
+MATCH_MAX_PER_RUN=50
+
+# ─── Scheduler ────────────────────────────────────────────────────────────────
+# Cron expression (default: every hour)
+SCAN_CRON=0 * * * *
+# Comma-separated list of enabled portals
+ENABLED_PORTALS=justjoin,nofluffjobs,pracujpl,linkedin
+
+# ─── Scrapers ─────────────────────────────────────────────────────────────────
+# Filter keywords (comma-separated) – used by all portal scrapers
+SCRAPER_KEYWORDS=typescript,node.js,react
+# Max offers fetched per portal per run
+SCRAPER_MAX_PER_PORTAL=100
+
+# ─── LinkedIn (optional) ──────────────────────────────────────────────────────
+LINKEDIN_EMAIL=
+LINKEDIN_PASSWORD=
+# Paste a LinkedIn job search URL with filters applied from your browser
+LINKEDIN_SEARCH_URL=https://www.linkedin.com/jobs/search/?keywords=software+engineer
+
+# ─── Playwright ───────────────────────────────────────────────────────────────
+PLAYWRIGHT_HEADLESS=true
