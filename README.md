@@ -128,7 +128,7 @@ scripts/
 ### Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/jobhunter3.git
+git clone https://github.com/SebastianWojcik22/jobhunter3.git
 cd jobhunter3
 
 npm install
@@ -201,6 +201,110 @@ For each new offer, one GPT-4o call compares your `CVProfile` against the full j
 
 ### 5. Notification & Apply
 A Telegram message is sent with the job's key details and two buttons: **View Job** (opens URL) and **Apply via Email**. Tapping the latter sends an email with your CV PDF attached via SMTP — no browser needed.
+
+---
+
+## Example Output
+
+### Telegram notification (what you receive on your phone)
+
+```
+Senior Node.js Developer at Acme Corp
+🏢 Acme Corp
+🌍 Remote | 📍 Warsaw
+💰 18,000–24,000 PLN
+🎯 Match score: 82/100 | via JustJoin.it
+
+Skills required: Node.js, TypeScript, REST APIs, PostgreSQL, Docker
+
+Responsibilities:
+• Build and maintain backend microservices
+• Design REST and GraphQL APIs
+• Participate in architecture decisions
+
+Why it fits: Strong match — candidate has 3 years of Node.js and TypeScript
+experience with REST API design, which directly covers the core requirements.
+PostgreSQL is listed in candidate's skills. Docker experience mentioned in
+recent role. Missing Kubernetes (nice-to-have, not blocking).
+
+⚠️ Missing: Kubernetes
+
+[ 🔗 View Job ]  [ 📧 Apply via Email ]
+```
+
+### GPT-4o matching result (saved to `data/match-results/`)
+
+```json
+{
+  "jobId": "a3f9c2d1e4b7...",
+  "portal": "justjoin",
+  "score": 82,
+  "isMatch": true,
+  "rationale": "Strong match — candidate has 3 years of Node.js and TypeScript experience with REST API design, which directly covers the core requirements. PostgreSQL is listed in candidate's skills. Docker experience mentioned in recent role. Missing Kubernetes (nice-to-have, not blocking).",
+  "matchedSkills": ["Node.js", "TypeScript", "REST APIs", "PostgreSQL", "Docker"],
+  "missingSkills": ["Kubernetes"],
+  "seniorityFit": "mid",
+  "matchedAt": "2025-07-14T10:32:11.000Z"
+}
+```
+
+### Parsed CV profile (`data/cv-profile.json`)
+
+```json
+{
+  "candidateName": "Jan Kowalski",
+  "email": "jan@example.com",
+  "yearsExperience": 3,
+  "skills": ["TypeScript", "Node.js", "React", "PostgreSQL", "Docker", "REST APIs"],
+  "roles": [
+    {
+      "title": "Backend Developer",
+      "company": "TechStartup Sp. z o.o.",
+      "startYear": 2022,
+      "endYear": null,
+      "description": "Built REST APIs using Node.js and TypeScript..."
+    }
+  ],
+  "languages": ["Polish (native)", "English (B2)"],
+  "parsedAt": "2025-07-14T09:00:00.000Z"
+}
+```
+
+### Scan run summary (console output)
+
+```
+[2025-07-14T10:30:00Z] [INFO] === Scan run started: 9f3a1b2c ===
+[2025-07-14T10:30:01Z] [INFO] Using cached CV profile { candidateName: 'Jan Kowalski' }
+[2025-07-14T10:30:04Z] [INFO] JustJoin: got 9842 total offers
+[2025-07-14T10:30:04Z] [INFO] JustJoin: 143 offers after keyword filter
+[2025-07-14T10:30:07Z] [INFO] NoFluffJobs: got 67 offers
+[2025-07-14T10:30:15Z] [INFO] Pracuj.pl: scraped 38 offers
+[2025-07-14T10:30:18Z] [INFO] LinkedIn: scraping failed (isolated) { error: 'auth wall detected' }
+[2025-07-14T10:30:18Z] [INFO] New offers: 31 | Duplicates skipped: 217
+[2025-07-14T10:30:18Z] [INFO] Matching 31 jobs against CV (threshold: 60/100)...
+[2025-07-14T10:32:44Z] [INFO] Match found: Senior Node.js Developer @ Acme Corp (score: 82)
+[2025-07-14T10:32:51Z] [INFO] Match found: Full Stack Engineer @ FinTech SA (score: 71)
+[2025-07-14T10:32:55Z] [INFO] Matching complete: 2/31 matches found
+[2025-07-14T10:32:56Z] [INFO] Telegram: notification sent for "Senior Node.js Developer"
+[2025-07-14T10:32:56Z] [INFO] Telegram: notification sent for "Full Stack Engineer"
+[2025-07-14T10:32:56Z] [INFO] === Scan run completed: 9f3a1b2c === { newJobs: 31, matches: 2, notifications: 2 }
+```
+
+---
+
+## Limitations
+
+This is a personal automation tool, not a SaaS product. A few things to be aware of before running it:
+
+| Limitation | Detail |
+|-----------|--------|
+| **LinkedIn scraping is unreliable** | LinkedIn actively detects and blocks bots. Expect frequent failures; the scraper is intentionally isolated so other portals still run. For best results, provide `LINKEDIN_SEARCH_URL` with pre-filtered criteria. |
+| **Portal API stability** | JustJoin.it and NoFluffJobs APIs are public but undocumented. Selectors and endpoints may change without notice. |
+| **Pracuj.pl selectors may drift** | Pracuj.pl CSS selectors are scraped from the live HTML. A UI redesign can break parsing; check the scraper if offers stop appearing. |
+| **Email apply requires listing email** | Not all job offers include a direct apply email. If `applyEmail` is null and `EMAIL_APPLY_FALLBACK` is empty, the button shows an error. The fallback is to visit the job URL manually. |
+| **GPT-4o cost** | Each matching call costs ~$0.01–0.03. With `MATCH_MAX_PER_RUN=50` and an hourly cron, daily cost is under $1.50 in most cases. Set `MATCH_MAX_PER_RUN` lower if cost is a concern. |
+| **No persistent state beyond dedup** | The Telegram `pendingJobsMap` is in-memory. If the process restarts between a notification and the user clicking "Apply", the job lookup fails. Restart `npm run start` to recover. |
+| **Single-user design** | Designed for one person's CV and one Telegram chat. Multi-user support would require a database and auth layer. |
 
 ---
 
