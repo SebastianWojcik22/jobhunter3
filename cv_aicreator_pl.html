@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sebastian Wójcik — AI Creator & Prompt Engineer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #1a1a1a; background: #fff; padding: 28px 36px; line-height: 1.5; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; color: #111; }
+  .role-title { font-size: 13px; color: #6B46C1; font-weight: 600; margin-top: 3px; letter-spacing: 0.3px; }
+  .contact { font-size: 10px; color: #555; margin-top: 6px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .contact a { color: #6B46C1; text-decoration: none; }
+  hr { border: none; border-top: 1.5px solid #6B46C1; margin: 12px 0 10px; }
+  h2 { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #6B46C1; margin-bottom: 7px; }
+  .section { margin-bottom: 13px; }
+  .summary { font-size: 10.5px; color: #2d2d2d; line-height: 1.6; }
+  .job { margin-bottom: 10px; }
+  .job-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .job-title { font-weight: 700; font-size: 11px; }
+  .job-company { font-weight: 600; color: #6B46C1; font-size: 10.5px; }
+  .job-date { font-size: 10px; color: #777; white-space: nowrap; }
+  .job-desc { font-size: 10.5px; color: #333; margin-top: 4px; line-height: 1.55; }
+  .project { margin-bottom: 6px; padding-left: 10px; border-left: 2px solid #d8b4fe; }
+  .project-name { font-weight: 700; font-size: 10.5px; color: #111; }
+  .project-name span { font-weight: 400; color: #555; font-size: 10px; }
+  .project-body { font-size: 10.5px; color: #333; margin-top: 2px; line-height: 1.55; }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 14px; }
+  .skill-item { font-size: 10.5px; color: #333; padding-left: 8px; position: relative; }
+  .skill-item::before { content: '▸'; color: #6B46C1; position: absolute; left: 0; font-size: 9px; top: 1px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+  .edu-item { margin-bottom: 6px; }
+  .edu-degree { font-weight: 600; font-size: 10.5px; }
+  .edu-school { font-size: 10px; color: #555; }
+  .tag { display: inline-block; background: #f3e8ff; color: #6B46C1; border: 1px solid #d8b4fe; border-radius: 3px; padding: 1px 6px; font-size: 9.5px; font-weight: 600; margin-right: 4px; margin-bottom: 3px; }
+  .highlight { background: #faf5ff; border-left: 3px solid #6B46C1; padding: 6px 10px; border-radius: 0 4px 4px 0; font-size: 10.5px; color: #333; margin-bottom: 8px; line-height: 1.55; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<h1>Sebastian Wójcik</h1>
+<div class="role-title">AI Creator &amp; Prompt Engineer</div>
+<div class="contact">
+  <span>📧 <a href="mailto:sebastian.wojcik.contact22@gmail.com">sebastian.wojcik.contact22@gmail.com</a></span>
+  <span>📞 +48 500 270 098</span>
+  <span>📍 Warszawa</span>
+  <span>🔗 <a href="https://github.com/SebastianWojcik22">github.com/SebastianWojcik22</a></span>
+</div>
+<hr>
+
+<!-- SUMMARY -->
+<div class="section">
+  <h2>Profil</h2>
+  <div class="summary">
+    Projektuję i buduję ustrukturyzowane systemy promptów dla generatywnej AI — nie pojedyncze zapytania, ale wersjonowane, testowalne biblioteki promptów generujące spójny, wysokiej jakości output w skali. Moje projekty łączą myślenie produktowe z inżynierią LLM: stworzyłem produkcyjne systemy, w których prompt jest rdzeniem produktu — architektury anti-hallucination, silniki wielowariantowej selekcji oraz automatyczne pętle kontroli jakości.<br><br>
+    Przyciągają mnie role na styku kreatywności i systemów AI — gdzie celem jest sprawienie, aby generatywna AI produkowała niezawodny, powtarzalny output kreatywny w różnych kontekstach. Aktualnie kończę studia podyplomowe z AI for Business na Akademii Koźmińskiego.
+  </div>
+</div>
+
+<!-- PROMPT ENGINEERING HIGHLIGHT -->
+<div class="section">
+  <h2>Prompt Engineering — Kluczowe Osiągnięcia</h2>
+
+  <div class="highlight">
+    <strong>Architektura promptów anti-hallucination (RiseWay3)</strong><br>
+    Zaprojektowałem produkcyjny system promptów dla GPT-4o analizującego 113 artykułów Rozporządzenia UE o AI — każdy prompt wstrzykuje pełny tekst artykułu verbatim między ogranicznikami, uniemożliwiając modelowi korzystanie z wiedzy treningowej. Zbudowałem wersjonowaną bibliotekę promptów obejmującą: uproszczone streszczenia, klasyfikację kategorii compliance (8 kategorii), scorowanie poziomu ryzyka i batch processing. System przetwarza cały akt prawny i synchronizuje ustrukturyzowany output do Notion.
+  </div>
+
+  <div class="highlight">
+    <strong>Wielowariantowy prompt selekcji CV (JobHunter3)</strong><br>
+    Zaprojektowałem prompt, który otrzymuje jednocześnie 6 wariantów profilu kandydata i instruuje GPT-4o do: (1) wyboru najlepiej dopasowanego CV do danej oferty pracy, (2) dostarczenia score dopasowania z uzasadnieniem, (3) wykrycia dealbreakers (np. "wymagane 5+ lat doświadczenia"). Output to walidowany JSON ze ścisłą schematyzacją. Zastępuje 6 osobnych wywołań API jednym, zachowując dokładność przy niższych kosztach i latencji.
+  </div>
+
+  <div class="highlight">
+    <strong>Automatyczna pętla kontroli jakości</strong><br>
+    Zbudowałem pipeline do automatycznego reprocessingu: artykuły/oferty z wynikiem poniżej progu confidence są flagowane i ponownie kolejkowane z dopracowanym wariantem promptu. Wdrożyłem A/B testing promptów do mierzenia spójności outputu między przebiegami. Wynik: wskaźnik halucynacji poniżej 3% na treściach regulacyjnych, weryfikowany względem dokumentów źródłowych.
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="section">
+  <h2>Projekty</h2>
+
+  <div class="job">
+    <div class="job-header">
+      <div>
+        <div class="job-title">AI Creator / Prompt Engineer</div>
+        <div class="job-company">Projekty własne — narzędzia oparte na AI</div>
+      </div>
+      <div class="job-date">2023 – teraz</div>
+    </div>
+    <div class="job-desc">Projektuję i wdrażam systemy AI, w których logika produktu jest oparta na promptach. Wszystkie projekty w pełni funkcjonalne, open-source na GitHub.</div>
+
+    <div style="margin-top: 8px;">
+      <div class="project">
+        <div class="project-name">RiseWay3 — Analizator Rozporządzenia UE o AI <span>| GPT-4o · Biblioteka promptów · Anti-hallucination</span></div>
+        <div class="project-body">7-etapowy pipeline ETL: pobiera Akt UE o AI z EUR-Lex, parsuje 113 artykułów, następnie przepuszcza każdy przez bibliotekę promptów (streszczenie, klasyfikacja compliance, scoring ryzyka). Kluczowe wyzwanie: zapobieganie wywodności modelu z danych treningowych — rozwiązane przez wstrzyknięcie verbatim tekstu i ograniczniki. Output synchronizowany do bazy Notion.
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-name">JobHunter3 — Automatyzacja Szukania Pracy <span>| Multi-prompt · Szablony · Structured output</span></div>
+        <div class="project-body">Automatyczny pipeline scrapujący 6 portali pracy (JustJoin, Pracuj.pl, NoFluffJobs, Remotive, Himalayas, WeWorkRemotely). Rdzeń: system szablonów promptów oceniający oferty pracy względem profili kandydata w ustrukturyzowanym JSON. Prompt wielowariantowy — GPT-4o wybiera najlepszy wariant CV, scoruje dopasowanie i wykrywa dealbreakers w jednym wywołaniu. Bot Telegram z powiadomieniami.
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-name">Monitor Cen OLX <span>| Automatyzacja · Playwright · Alerty</span></div>
+        <div class="project-body">Monitor ogłoszeń OLX w czasie rzeczywistym — Playwright scraping, deduplication SHA-256, alerty Telegram. Demonstracja systematycznego podejścia do automatyzacji opartej na szablonach.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="section">
+  <h2>Umiejętności</h2>
+  <div class="skills-grid">
+    <div class="skill-item">Prompt engineering i projektowanie</div>
+    <div class="skill-item">GPT-4o / Claude / Anthropic API</div>
+    <div class="skill-item">Structured output (JSON schema)</div>
+    <div class="skill-item">Techniki anti-hallucination</div>
+    <div class="skill-item">Biblioteki i wersjonowanie promptów</div>
+    <div class="skill-item">Iteracyjne testowanie promptów</div>
+    <div class="skill-item">Generatywne narzędzia AI</div>
+    <div class="skill-item">OpenAI API / LangChain</div>
+    <div class="skill-item">Integracja i orkiestracja LLM</div>
+    <div class="skill-item">Projektowanie szablonów kreatywnych</div>
+    <div class="skill-item">Strukturyzacja treści / storyboarding</div>
+    <div class="skill-item">Powtarzalne systemy kreatywne</div>
+    <div class="skill-item">AI-assisted coding (Claude Code, Cursor)</div>
+    <div class="skill-item">TypeScript / Node.js</div>
+    <div class="skill-item">Automatyzacja i pipeline ETL</div>
+    <div class="skill-item">Make / Zapier / n8n</div>
+    <div class="skill-item">Notion API / Airtable</div>
+    <div class="skill-item">GitHub / Git</div>
+  </div>
+</div>
+
+<!-- AI TOOLS -->
+<div class="section">
+  <h2>Narzędzia Generatywnej AI</h2>
+  <div>
+    <span class="tag">GPT-4o</span>
+    <span class="tag">Claude 3.5 / 4</span>
+    <span class="tag">Claude Code</span>
+    <span class="tag">Cursor</span>
+    <span class="tag">Midjourney</span>
+    <span class="tag">DALL-E 3</span>
+    <span class="tag">Runway ML</span>
+    <span class="tag">Sora</span>
+    <span class="tag">Kling AI</span>
+    <span class="tag">ElevenLabs</span>
+    <span class="tag">Pika</span>
+    <span class="tag">LangChain</span>
+    <span class="tag">OpenAI API</span>
+    <span class="tag">Anthropic API</span>
+    <span class="tag">Perplexity</span>
+    <span class="tag">Gemini</span>
+  </div>
+</div>
+
+<!-- EDUCATION & LANGUAGES -->
+<div class="section">
+  <div class="two-col">
+    <div>
+      <h2>Edukacja</h2>
+      <div class="edu-item">
+        <div class="edu-degree">Studia podyplomowe — AI for Business</div>
+        <div class="edu-school">Akademia Koźmińskiego, Warszawa · 2025–2026</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-degree">Licencjat — Zarządzanie Projektami IT</div>
+        <div class="edu-school">WSB Merito, Warszawa · 2022–2025</div>
+      </div>
+    </div>
+    <div>
+      <h2>Języki</h2>
+      <div class="edu-item">
+        <div class="edu-degree">Polski</div>
+        <div class="edu-school">Ojczysty</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-degree">Angielski</div>
+        <div class="edu-school">B2 / C1 — biegły zawodowo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "developer-en",
+    "role": "developer",
+    "language": "en",
+    "pdfPath": "data/cv/developer-en.pdf",
+    "profilePath": "data/cv-profiles/developer-en.json"
+  },
+  {
+    "id": "automation-en",
+    "role": "automation",
+    "language": "en",
+    "pdfPath": "data/cv/automation-en.pdf",
+    "profilePath": "data/cv-profiles/automation-en.json"
+  },
+  {
+    "id": "pm-en",
+    "role": "pm",
+    "language": "en",
+    "pdfPath": "data/cv/pm-en.pdf",
+    "profilePath": "data/cv-profiles/pm-en.json"
+  },
+  {
+    "id": "developer-pl",
+    "role": "developer",
+    "language": "pl",
+    "pdfPath": "data/cv/developer-pl.pdf",
+    "profilePath": "data/cv-profiles/developer-pl.json"
+  },
+  {
+    "id": "automation-pl",
+    "role": "automation",
+    "language": "pl",
+    "pdfPath": "data/cv/automation-pl.pdf",
+    "profilePath": "data/cv-profiles/automation-pl.json"
+  },
+  {
+    "id": "pm-pl",
+    "role": "pm",
+    "language": "pl",
+    "pdfPath": "data/cv/pm-pl.pdf",
+    "profilePath": "data/cv-profiles/pm-pl.json"
+  },
+  {
+    "id": "aicreator-en",
+    "role": "aicreator",
+    "language": "en",
+    "pdfPath": "data/cv/aicreator-en.pdf",
+    "profilePath": "data/cv-profiles/aicreator-en.json"
+  },
+  {
+    "id": "aicreator-pl",
+    "role": "aicreator",
+    "language": "pl",
+    "pdfPath": "data/cv/aicreator-pl.pdf",
+    "profilePath": "data/cv-profiles/aicreator-pl.json"
+  }
+]

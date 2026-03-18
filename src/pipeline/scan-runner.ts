@@ -53,6 +53,8 @@ export async function runScan(config: ScanConfig, openai: OpenAI): Promise<ScanR
     'automation-pl': ['automatyzacja', 'workflow', 'integracja', 'make', 'n8n', 'playwright', 'ai', 'procesy'],
     'pm-en': ['project manager', 'pm', 'scrum', 'agile', 'product', 'coordinator', 'delivery', 'jira'],
     'pm-pl': ['kierownik projektu', 'pm', 'scrum', 'agile', 'koordynator', 'delivery', 'jira', 'product owner'],
+    'aicreator-en': ['prompt engineer', 'ai creator', 'generative ai', 'ai content', 'ai video', 'vibe coding', 'midjourney', 'dall-e', 'runway', 'storyboard', 'prompt library', 'ai creative', 'llm prompt'],
+    'aicreator-pl': ['inżynier promptów', 'ai creator', 'generatywna ai', 'treści ai', 'prompt engineering', 'vibe coding', 'midjourney', 'storyboard', 'biblioteka promptów', 'kreatywność ai'],
   };
   const cvVariants: CvVariant[] = Array.from(cvProfiles.entries()).map(([id, profile]) => ({
     id,

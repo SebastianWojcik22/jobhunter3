@@ -1,7 +1,7 @@
 export type Portal = 'justjoin' | 'nofluffjobs' | 'pracujpl' | 'linkedin' | 'remotive' | 'himalayas' | 'weworkremotely';
 
-/** Which CV variant to use — matches the 3 targeted role positions */
-export type CvRole = 'developer' | 'automation' | 'pm';
+/** Which CV variant to use — matches the 4 targeted role positions */
+export type CvRole = 'developer' | 'automation' | 'pm' | 'aicreator';
 
 /** Language of the job offer (and the CV to send) */
 export type CvLanguage = 'en' | 'pl';

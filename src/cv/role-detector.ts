@@ -6,6 +6,17 @@ import type { JobOffer, CvRole } from '../types/index.js';
  * The role with the highest score wins; ties broken by priority order: automation > developer > pm.
  */
 const ROLE_KEYWORDS: Record<CvRole, string[]> = {
+  aicreator: [
+    'ai creator', 'prompt engineer', 'prompt engineering', 'inżynier promptów',
+    'generative ai', 'generatywna ai', 'ai content', 'treści ai',
+    'ai video', 'ai image', 'ai script', 'ai creative',
+    'vibe coding', 'ai-assisted', 'ai assisted',
+    'midjourney', 'dall-e', 'runway', 'kling', 'sora', 'pika',
+    'storyboard', 'creative template', 'prompt library', 'biblioteka promptów',
+    'ai advertising', 'ai marketing', 'ai copywriting',
+    'llm prompt', 'prompt design', 'prompt optim',
+    'ai storytelling', 'creative ai', 'ai content creator',
+  ],
   automation: [
     'automation', 'automatyzacja', 'automatyk', 'automator',
     'rpa', 'robotic process', 'workflow', 'make.com', 'zapier', 'n8n',
@@ -46,7 +57,7 @@ const ROLE_KEYWORDS: Record<CvRole, string[]> = {
 export function detectJobRole(job: JobOffer): CvRole {
   const text = `${job.title} ${job.fullDescription} ${job.responsibilities.join(' ')} ${job.skills.join(' ')}`.toLowerCase();
 
-  const scores: Record<CvRole, number> = { automation: 0, developer: 0, pm: 0 };
+  const scores: Record<CvRole, number> = { aicreator: 0, automation: 0, developer: 0, pm: 0 };
 
   for (const [role, keywords] of Object.entries(ROLE_KEYWORDS) as [CvRole, string[]][]) {
     for (const kw of keywords) {
@@ -54,9 +65,9 @@ export function detectJobRole(job: JobOffer): CvRole {
     }
   }
 
-  // Priority tiebreak: automation > developer > pm
-  const order: CvRole[] = ['automation', 'developer', 'pm'];
-  let best: CvRole = 'developer';
+  // Priority tiebreak: aicreator > automation > developer > pm
+  const order: CvRole[] = ['aicreator', 'automation', 'developer', 'pm'];
+  let best: CvRole = 'aicreator';
   let bestScore = -1;
 
   for (const role of order) {
