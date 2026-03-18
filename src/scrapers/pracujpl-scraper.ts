@@ -11,21 +11,38 @@ export class PracujPlScraper extends BaseScraper {
     const headless = process.env['PLAYWRIGHT_HEADLESS'] !== 'false';
     const browser = await chromium.launch({ headless });
     try {
-      return await this.scrape(browser, keywords, maxOffers);
+      const allOffers: JobOffer[] = [];
+      const seenIds = new Set<string>();
+      const perKeyword = Math.ceil(maxOffers / keywords.length);
+
+      for (const keyword of keywords) {
+        if (allOffers.length >= maxOffers) break;
+        const page = await browser.newPage();
+        try {
+          const offers = await this.scrapeKeyword(page, keyword, perKeyword, seenIds);
+          allOffers.push(...offers);
+        } finally {
+          await page.close();
+        }
+      }
+
+      logger.info(`Pracuj.pl: total ${allOffers.length} offers scraped`);
+      return allOffers;
     } finally {
       await browser.close();
     }
   }
 
-  private async scrape(browser: Browser, keywords: string[], maxOffers: number): Promise<JobOffer[]> {
-    const page = await browser.newPage();
+  private async scrapeKeyword(
+    page: Page,
+    keyword: string,
+    maxOffers: number,
+    seenIds: Set<string>,
+  ): Promise<JobOffer[]> {
     await page.setExtraHTTPHeaders({ 'Accept-Language': 'pl-PL,pl;q=0.9' });
 
-    // Use first keyword only — Pracuj.pl treats multiple words as phrase search → 0 results
-    const query = keywords[0] ?? 'it';
-    const searchUrl = `https://www.pracuj.pl/praca/${encodeURIComponent(query)};kw`;
-
-    logger.info(`Pracuj.pl: navigating to ${searchUrl}`);
+    const searchUrl = `https://www.pracuj.pl/praca/${encodeURIComponent(keyword)};kw`;
+    logger.info(`Pracuj.pl: navigating for keyword "${keyword}"...`);
     await page.goto(searchUrl, { waitUntil: 'networkidle', timeout: 45000 });
 
     // Accept cookies if dialog appears
@@ -38,12 +55,17 @@ export class PracujPlScraper extends BaseScraper {
     } catch { /* no cookie dialog */ }
 
     const offers: JobOffer[] = [];
-    const seenIds = new Set<string>();
 
     let pageNum = 1;
     while (offers.length < maxOffers) {
-      logger.info(`Pracuj.pl: scraping page ${pageNum}...`);
-      await page.waitForSelector('[data-test="default-offer"]', { timeout: 15000 });
+      logger.info(`Pracuj.pl: scraping page ${pageNum} for "${keyword}"...`);
+
+      try {
+        await page.waitForSelector('[data-test="default-offer"]', { timeout: 15000 });
+      } catch {
+        logger.warn(`Pracuj.pl: no offers found for "${keyword}"`);
+        break;
+      }
 
       const cards = await page.locator('[data-test="default-offer"]').all();
       if (cards.length === 0) break;
@@ -64,7 +86,6 @@ export class PracujPlScraper extends BaseScraper {
 
           if (!href || !title) continue;
 
-          // Extract job ID from URL
           const idMatch = href.match(/,oferta,(\d+)/);
           const portalJobId = idMatch?.[1] ?? href;
 
@@ -74,7 +95,6 @@ export class PracujPlScraper extends BaseScraper {
           const workMode = location.toLowerCase().includes('zdaln') ||
                            location.toLowerCase().includes('remote') ? 'remote' : 'unknown';
 
-          // Check for remote/hybrid badge
           let finalWorkMode: WorkMode = workMode;
           try {
             const badges = await card.locator('[data-test="offer-badge"]').allTextContents();
@@ -84,8 +104,6 @@ export class PracujPlScraper extends BaseScraper {
               if (b.includes('hybrid')) { finalWorkMode = 'hybrid'; break; }
             }
           } catch { /* skip */ }
-
-          const fullDescription = `${title}\n${company}\n${location}`;
 
           offers.push({
             id: this.makeId(portalJobId),
@@ -97,7 +115,7 @@ export class PracujPlScraper extends BaseScraper {
             workMode: finalWorkMode,
             salary: null,
             skills: [],
-            fullDescription,
+            fullDescription: `${title}\n${company}\n${location}`,
             responsibilities: [],
             url: href.startsWith('http') ? href : `https://www.pracuj.pl${href}`,
             applyEmail: null,
@@ -108,7 +126,6 @@ export class PracujPlScraper extends BaseScraper {
         }
       }
 
-      // Try next page
       try {
         const nextBtn = page.locator('[data-test="top-pagination-button-next"]');
         if (!(await nextBtn.isVisible({ timeout: 2000 })) || !(await nextBtn.isEnabled())) break;
@@ -121,11 +138,8 @@ export class PracujPlScraper extends BaseScraper {
       }
     }
 
-    logger.info(`Pracuj.pl: scraped ${offers.length} offers`);
-
-    // Enrich with full descriptions by visiting individual offer pages (limited to first 20)
+    logger.info(`Pracuj.pl: "${keyword}" → ${offers.length} offers`);
     await this.enrichOffers(page, offers.slice(0, 20));
-
     return offers;
   }
 
