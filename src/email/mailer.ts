@@ -26,7 +26,7 @@ Applied via JobHunter3 | ${job.url}
 `;
 }
 
-export async function sendApplicationEmail(job: JobOffer): Promise<EmailResult> {
+export async function sendApplicationEmail(job: JobOffer, cvVariantId?: string): Promise<EmailResult> {
   const to = job.applyEmail ?? process.env['EMAIL_APPLY_FALLBACK'];
   if (!to) {
     throw new Error(
@@ -34,7 +34,10 @@ export async function sendApplicationEmail(job: JobOffer): Promise<EmailResult> 
     );
   }
 
-  const cvPath = path.resolve(process.env['CV_PDF_PATH'] ?? 'data/cv.pdf');
+  // Use the matched CV variant if available, otherwise fall back to default
+  const cvPath = cvVariantId
+    ? path.resolve(`data/cv/${cvVariantId}.pdf`)
+    : path.resolve(process.env['CV_PDF_PATH'] ?? 'data/cv.pdf');
   if (!fs.existsSync(cvPath)) {
     throw new Error(`CV file not found at: ${cvPath}`);
   }

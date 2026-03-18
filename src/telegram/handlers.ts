@@ -17,7 +17,7 @@ export function registerHandlers(): void {
       return;
     }
 
-    const jobId = data.replace('apply::', '');
+    const jobId = data.replace('apply::', '').slice(0, 55);
     const pending = pendingJobsMap.get(jobId);
 
     if (!pending) {
@@ -28,13 +28,13 @@ export function registerHandlers(): void {
       return;
     }
 
-    const { job } = pending;
-    logger.info(`Telegram: user requested email apply for "${job.title}"`);
+    const { job, match } = pending;
+    logger.info(`Telegram: user requested email apply for "${job.title}"`, { cvVariant: match.selectedCvId });
 
     await bot.answerCallbackQuery(query.id, { text: 'Sending email...' });
 
     try {
-      const result = await sendApplicationEmail(job);
+      const result = await sendApplicationEmail(job, match.selectedCvId);
 
       const appliedNote = `\n\n✅ *Applied on ${new Date().toLocaleString('pl-PL')}*\n📧 Email sent to: ${result.sentTo}`;
 
@@ -45,14 +45,14 @@ export function registerHandlers(): void {
             {
               chat_id: chatId,
               message_id: messageId,
-              parse_mode: 'MarkdownV2',
+              parse_mode: 'HTML',
               reply_markup: { inline_keyboard: [[{ text: '✅ Applied', callback_data: 'noop' }]] },
             },
           );
         } catch {
           // If edit fails (message too old), just send a follow-up
           await bot.sendMessage(chatId, `✅ Email sent for *${job.title}* to ${result.sentTo}`, {
-            parse_mode: 'MarkdownV2',
+            parse_mode: 'HTML',
           });
         }
       }

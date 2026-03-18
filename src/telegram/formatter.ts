@@ -28,37 +28,49 @@ function workModeIcon(mode: string): string {
 export function formatJobNotification(job: JobOffer, match: MatchResult): string {
   const portal = PORTAL_LABEL[job.portal] ?? job.portal;
   const skills = job.skills.slice(0, 8).join(', ') || 'Not specified';
-  const responsibilities = job.responsibilities.slice(0, 3);
   const salary = formatSalary(job);
   const workMode = workModeIcon(job.workMode);
+  const cvLabel = formatCvVariant(match.selectedCvId);
+
+  const e = escapeHtml;
 
   const lines: string[] = [
-    `*${escapeMarkdown(job.title)}*`,
-    `🏢 ${escapeMarkdown(job.company)}`,
-    `${workMode} | 📍 ${escapeMarkdown(job.location)}`,
-    `💰 ${salary}`,
-    `🎯 Match score: *${match.score}/100* | via ${portal}`,
+    `<b>${e(job.title)}</b>`,
+    `🏢 ${e(job.company)}`,
+    `${e(workMode)} | 📍 ${e(job.location)}`,
+    `💰 ${e(salary)}`,
+    `🎯 Match score: <b>${match.score}/100</b> | via ${e(portal)}`,
+    `📄 CV: ${e(cvLabel)}`,
     '',
-    `*Skills required:* ${escapeMarkdown(skills)}`,
+    `<b>Skills:</b> ${e(skills)}`,
   ];
 
-  if (responsibilities.length > 0) {
-    lines.push('', '*Responsibilities:*');
-    for (const r of responsibilities) {
-      lines.push(`• ${escapeMarkdown(r)}`);
-    }
-  }
-
-  lines.push('', `*Why it fits:* ${escapeMarkdown(match.rationale)}`);
+  lines.push('', `<b>Why it fits:</b> ${e(match.rationale)}`);
 
   if (match.missingSkills.length > 0) {
-    lines.push(`⚠️ *Missing:* ${escapeMarkdown(match.missingSkills.slice(0, 4).join(', '))}`);
+    lines.push(`⚠️ <b>Missing:</b> ${e(match.missingSkills.slice(0, 4).join(', '))}`);
   }
 
   return lines.join('\n');
 }
 
-/** Escape Telegram MarkdownV2 special characters */
-function escapeMarkdown(text: string): string {
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, c => `\\${c}`);
+/** Human-readable label for a CV variant ID like 'developer-en' */
+function formatCvVariant(variantId: string): string {
+  const labels: Record<string, string> = {
+    'developer-en': 'AI Solutions Builder (EN)',
+    'developer-pl': 'AI Solutions Builder (PL)',
+    'automation-en': 'Automation Specialist (EN)',
+    'automation-pl': 'Automation Specialist (PL)',
+    'pm-en': 'Junior IT Project Manager (EN)',
+    'pm-pl': 'Junior IT Project Manager (PL)',
+  };
+  return labels[variantId] ?? variantId;
+}
+
+/** Escape HTML entities for Telegram HTML parse mode */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }

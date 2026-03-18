@@ -1,21 +1,21 @@
 import OpenAI from 'openai';
-import { JobOffer, CVProfile, MatchResult } from '../types/index.js';
+import { JobOffer, CvVariant, MatchResult } from '../types/index.js';
 import { MatchGptResponseSchema } from '../schemas/job-offer.schema.js';
 import { buildMatchingPrompt } from './prompts.js';
 import { logger, RateLimiter } from '../utils/index.js';
 
 const rateLimiter = new RateLimiter(3000); // 3s between GPT-4o calls
 
-export async function matchJobToCv(
+export async function matchJobToVariants(
   job: JobOffer,
-  cvProfile: CVProfile,
+  cvVariants: CvVariant[],
   openai: OpenAI,
   model: string,
   threshold: number,
 ): Promise<MatchResult> {
   await rateLimiter.wait();
 
-  const prompt = buildMatchingPrompt(cvProfile, job.title, job.fullDescription);
+  const prompt = buildMatchingPrompt(cvVariants, job.title, job.fullDescription);
 
   const response = await openai.chat.completions.create({
     model,
@@ -25,29 +25,36 @@ export async function matchJobToCv(
   });
 
   const content = response.choices[0]?.message?.content;
-  if (!content) {
-    throw new Error(`GPT-4o returned empty response for job ${job.id}`);
-  }
+  if (!content) throw new Error(`GPT-4o returned empty response for job ${job.id}`);
 
   const raw = JSON.parse(content);
   const validated = MatchGptResponseSchema.parse(raw);
 
+  // Resolve the selected variant (fall back to first if ID not found)
+  const selectedVariant =
+    cvVariants.find(v => v.id === validated.selectedCvId) ?? cvVariants[0]!;
+
   return {
     jobId: job.id,
     portal: job.portal,
+    selectedCvId: selectedVariant.id,
+    detectedLanguage: selectedVariant.language,
+    detectedRole: selectedVariant.role,
     score: validated.score,
     isMatch: validated.score >= threshold,
     rationale: validated.rationale,
     matchedSkills: validated.matchedSkills,
     missingSkills: validated.missingSkills,
     seniorityFit: validated.seniorityFit,
+    dealbreakersFound: validated.dealbreakersFound,
+    alternativeCvId: validated.alternativeCvId,
     matchedAt: new Date().toISOString(),
   };
 }
 
 export async function batchMatch(
   jobs: JobOffer[],
-  cvProfile: CVProfile,
+  cvVariants: CvVariant[],
   openai: OpenAI,
   model: string,
   threshold: number,
@@ -56,18 +63,18 @@ export async function batchMatch(
   const toMatch = jobs.slice(0, maxPerRun);
   const results: MatchResult[] = [];
 
-  logger.info(`Matching ${toMatch.length} jobs against CV (threshold: ${threshold}/100)...`);
+  logger.info(`Matching ${toMatch.length} jobs against ${cvVariants.length} CV variants (threshold: ${threshold}/100)...`);
 
-  for (let i = 0; i < toMatch.length; i++) {
-    const job = toMatch[i];
-    if (!job) continue;
+  for (const job of toMatch) {
     try {
-      const result = await matchJobToCv(job, cvProfile, openai, model, threshold);
+      const result = await matchJobToVariants(job, cvVariants, openai, model, threshold);
       results.push(result);
       if (result.isMatch) {
-        logger.info(`Match found: ${job.title} @ ${job.company} (score: ${result.score})`, {
+        logger.info(`Match: ${job.title} @ ${job.company} (score: ${result.score}, cv: ${result.selectedCvId})`, {
           portal: job.portal,
           score: result.score,
+          cvVariant: result.selectedCvId,
+          dealbreakers: result.dealbreakersFound,
         });
       }
     } catch (err) {

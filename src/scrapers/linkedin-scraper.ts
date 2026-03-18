@@ -38,7 +38,8 @@ export class LinkedInScraper extends BaseScraper {
 
       // Patch navigator to avoid automation detection
       await page.addInitScript(() => {
-        Object.defineProperty(navigator, 'webdriver', { get: () => false });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Object.defineProperty((globalThis as any).navigator, 'webdriver', { get: () => false });
       });
 
       const offers = await this.scrape(page, searchUrl, keywords, maxOffers);

@@ -21,11 +21,12 @@ export class PracujPlScraper extends BaseScraper {
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders({ 'Accept-Language': 'pl-PL,pl;q=0.9' });
 
-    const query = keywords.join(' ');
+    // Use first keyword only — Pracuj.pl treats multiple words as phrase search → 0 results
+    const query = keywords[0] ?? 'it';
     const searchUrl = `https://www.pracuj.pl/praca/${encodeURIComponent(query)};kw`;
 
     logger.info(`Pracuj.pl: navigating to ${searchUrl}`);
-    await page.goto(searchUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(searchUrl, { waitUntil: 'networkidle', timeout: 45000 });
 
     // Accept cookies if dialog appears
     try {

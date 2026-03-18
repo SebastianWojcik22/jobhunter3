@@ -4,8 +4,13 @@ import { CVGptResponseSchema } from '../schemas/job-offer.schema.js';
 import { buildCvParsingPrompt } from './prompts.js';
 import { logger } from '../utils/index.js';
 
-export async function parseCvWithAI(rawText: string, openai: OpenAI, model: string): Promise<CVProfile> {
-  logger.info('Parsing CV with GPT-4o...');
+export async function parseCvWithAI(
+  rawText: string,
+  openai: OpenAI,
+  model: string,
+  variantId: string = 'default',
+): Promise<CVProfile> {
+  logger.info('Parsing CV with GPT-4o...', { variantId });
 
   const prompt = buildCvParsingPrompt(rawText);
 
@@ -26,9 +31,10 @@ export async function parseCvWithAI(rawText: string, openai: OpenAI, model: stri
 
   const profile: CVProfile = {
     ...validated,
+    variantId,
     parsedAt: new Date().toISOString(),
   };
 
-  logger.info('CV parsed successfully', { candidateName: profile.candidateName, skills: profile.skills.length });
+  logger.info('CV parsed successfully', { variantId, candidateName: profile.candidateName, skills: profile.skills.length });
   return profile;
 }

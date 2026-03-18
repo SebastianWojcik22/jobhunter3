@@ -4,14 +4,20 @@ import { JustJoinScraper } from './justjoin-scraper.js';
 import { NoFluffJobsScraper } from './nofluffjobs-scraper.js';
 import { PracujPlScraper } from './pracujpl-scraper.js';
 import { LinkedInScraper } from './linkedin-scraper.js';
+import { RemotiveScraper } from './remotive-scraper.js';
+import { HimalayasScraper } from './himalayas-scraper.js';
+import { WeWorkRemotelyScraper } from './weworkremotely-scraper.js';
 
-export { JustJoinScraper, NoFluffJobsScraper, PracujPlScraper, LinkedInScraper };
+export { JustJoinScraper, NoFluffJobsScraper, PracujPlScraper, LinkedInScraper, RemotiveScraper, HimalayasScraper, WeWorkRemotelyScraper };
 
 const ALL_SCRAPERS = {
   justjoin: JustJoinScraper,
   nofluffjobs: NoFluffJobsScraper,
   pracujpl: PracujPlScraper,
   linkedin: LinkedInScraper,
+  remotive: RemotiveScraper,
+  himalayas: HimalayasScraper,
+  weworkremotely: WeWorkRemotelyScraper,
 } as const;
 
 export interface ScraperRunResult {

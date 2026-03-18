@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "parse-cv": "tsx scripts/parse-cv.ts",
+    "parse-all-cvs": "tsx scripts/parse-all-cvs.ts",
+    "parse-all-cvs:force": "tsx scripts/parse-all-cvs.ts --force",
     "scan": "tsx scripts/run-scan.ts",
     "start": "tsx scripts/start-scheduler.ts",
     "typecheck": "tsc --noEmit",

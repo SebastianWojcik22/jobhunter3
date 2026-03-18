@@ -1,4 +1,34 @@
-export type Portal = 'justjoin' | 'nofluffjobs' | 'pracujpl' | 'linkedin';
+export type Portal = 'justjoin' | 'nofluffjobs' | 'pracujpl' | 'linkedin' | 'remotive' | 'himalayas' | 'weworkremotely';
+
+/** Which CV variant to use — matches the 3 targeted role positions */
+export type CvRole = 'developer' | 'automation' | 'pm';
+
+/** Language of the job offer (and the CV to send) */
+export type CvLanguage = 'en' | 'pl';
+
+/**
+ * One registered CV variant with metadata.
+ * Config loaded from data/cv-variants.json.
+ */
+export interface CvVariantMeta {
+  id: string;          // e.g. 'developer-en'
+  role: CvRole;
+  language: CvLanguage;
+  pdfPath: string;     // path to the PDF file
+  profilePath: string; // path to cached CVProfile JSON
+}
+
+/**
+ * CV variant with loaded profile + activation keywords.
+ * All variants are passed to GPT-4o simultaneously so it selects the best one.
+ */
+export interface CvVariant {
+  id: string;
+  role: CvRole;
+  language: CvLanguage;
+  keywords: string[];
+  profile: CVProfile;
+}
 
 export type WorkMode = 'remote' | 'hybrid' | 'onsite' | 'unknown';
 
@@ -42,9 +72,11 @@ export interface JobOffer {
 
 /**
  * Structured candidate profile parsed from a CV PDF by GPT-4o.
- * Cached to data/cv-profile.json after the first parse.
+ * Cached to data/cv-profiles/{variantId}.json after the first parse.
  */
 export interface CVProfile {
+  /** Which variant this profile belongs to (e.g. 'developer-en') */
+  variantId: string;
   candidateName: string;
   email: string;
   phone: string | null;
@@ -75,6 +107,12 @@ export interface CVProfile {
 export interface MatchResult {
   jobId: string;
   portal: Portal;
+  /** Which CV variant was selected for this match (e.g. 'developer-en') */
+  selectedCvId: string;
+  /** Detected language of the job offer */
+  detectedLanguage: CvLanguage;
+  /** Detected role category of the job offer */
+  detectedRole: CvRole;
   /** 0–100 */
   score: number;
   /** true when score >= MATCH_THRESHOLD */
@@ -84,6 +122,8 @@ export interface MatchResult {
   matchedSkills: string[];
   missingSkills: string[];
   seniorityFit: 'junior' | 'mid' | 'senior' | 'lead' | 'unknown';
+  dealbreakersFound: string[];
+  alternativeCvId: string | null;
   /** ISO 8601 */
   matchedAt: string;
 }

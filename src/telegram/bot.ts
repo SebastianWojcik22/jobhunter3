@@ -33,17 +33,18 @@ export async function sendJobNotification(job: JobOffer, match: MatchResult): Pr
   const bot = getBot();
   const text = formatJobNotification(job, match);
 
-  // Store in pending map for callback resolution
-  pendingJobsMap.set(job.id, { job, match });
+  // Telegram callback_data limit is 64 bytes; use short key (first 55 chars of hash)
+  const shortKey = job.id.slice(0, 55);
+  pendingJobsMap.set(shortKey, { job, match });
+
+  const buttons = [{ text: '🔗 Apply on Portal', url: job.url }];
+  if (job.applyEmail) {
+    buttons.push({ text: '📧 Apply via Email', callback_data: `apply::${shortKey}` } as never);
+  }
 
   await bot.sendMessage(Number(chatId), text, {
-    parse_mode: 'MarkdownV2',
-    reply_markup: {
-      inline_keyboard: [[
-        { text: '🔗 View Job', url: job.url },
-        { text: '📧 Apply via Email', callback_data: `apply::${job.id}` },
-      ]],
-    },
+    parse_mode: 'HTML',
+    reply_markup: { inline_keyboard: [buttons] },
   });
 
   logger.info(`Telegram: notification sent for "${job.title}"`, { score: match.score });
