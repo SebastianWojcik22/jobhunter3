@@ -10,16 +10,11 @@ export class JustJoinScraper extends BaseScraper {
     logger.info('JustJoin: launching Playwright...');
     const headless = process.env['PLAYWRIGHT_HEADLESS'] !== 'false';
     const browser = await chromium.launch({ headless });
-    // Playwright scrapers are slow (one page load per keyword) — cap at 8 keywords
-    const limitedKeywords = keywords.slice(0, 8);
-    if (keywords.length > 8) {
-      logger.info(`JustJoin: limiting to 8 keywords (got ${keywords.length})`);
-    }
     try {
       const allOffers: JobOffer[] = [];
       const seenIds = new Set<string>();
 
-      for (const keyword of limitedKeywords) {
+      for (const keyword of keywords) {
         if (allOffers.length >= maxOffers) break;
         const page = await browser.newPage();
         try {
